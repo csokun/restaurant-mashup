@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    title Restaurant Management - Login
+    meta(charset='utf-8')
+    link(href='https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css', rel='stylesheet')
+    link(href='/css/login.css', rel='stylesheet')
+    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=", crossorigin="anonymous")
+    script(src='https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js')
+    
+  body
+    div.ui.middle.aligned.center.aligned.grid
+        div.column
+            h2.ui.teal.image.header
+                img.image(src='/img/logo.png')
+                div.content Authentication
+        
+            form.ui.large.form(action='/login', method='post')
+                div.ui.stacked.segment
+                    div.field
+                        select#username.ui.fluid.normal.dropdown(name="username")
+                            each user in data
+                                option(value=user.username) #{user.name}
+                            
+                    button.ui.fluid.large.teal.submit.button Login               
+                
+    script
+        | $('.ui.dropdown').dropdown();

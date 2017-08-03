@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    title Restaurant Management - #{title || 'Home'}
+    meta(charset='utf-8')
+    link(href='https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css', rel='stylesheet')
+    link(href='/css/style.css', rel='stylesheet')
+    
+  body
+    div.ui.fixed.inverted.menu
+        div.ui.container
+            a.header.item(href='/')
+                img(src='/img/logo.png')                
+            a.item(href='/') Hi, #{user.name}
+            a.item(href='/logout') Logout
+
+    div.pusher
+        div.ui.main.container
+            block content  
+
+    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=", crossorigin="anonymous")
+    script(src='https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js')

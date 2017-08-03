@@ -1,0 +1,10 @@
+body {
+    font-family: Battambang,Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+    margin-top: 60px !important;
+}
+
+.main.container {
+    margin: 5px;
+    min-height: 640px;
+}
+
