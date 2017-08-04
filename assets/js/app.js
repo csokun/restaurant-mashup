@@ -45,7 +45,22 @@ const waiterComponent = {
     bindings: { },
     template: `
     <h1>Waiter</h1>
-
+    <div class="ui grid">
+        <div class="twelve wide column" ng-repeat="assign in $ctrl.data.assigned">
+            <div class="ui piled segment">
+                <h4 class="ui header">{{assign.restaurant}}</h4>
+                <ul>
+                    <li ng-repeat="table in assign.tables">{{table}}</li>
+                <ul>
+            </div>
+        </div>
+        <div class="twelve wide column" ng-if="$ctrl.data.assigned.length == 0">
+            <div class="ui piled segment">
+                <h4 class="ui header">Oop! no table assigned</h4>
+                <p>Have a nice day :)</p>
+            </div>
+        </div>
+    </div>
     `,
     controller: function ($http) {
         this.$onInit = function () {
@@ -53,7 +68,7 @@ const waiterComponent = {
 
             $http.get(`/api/waiters/${CURRENT_USER.username}`)
                 .then(res => {
-                    this.assigned = res.data;
+                    this.data = res.data;
                     console.log(this.assigned);
                 });
         }

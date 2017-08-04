@@ -11,7 +11,8 @@ const session = require('express-session');
 app.use(session({ 
     secret: 'zno2~PMl;q.VXuFS3So*wX$3$wks3{./[]LvM1_^IHB<-+Mz*(-(gW<(l+wY!o_:',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: { maxAge: 24 * 3600 * 1000 } // 24 hrs
 }));
 
 app.use(helmet({
