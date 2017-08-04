@@ -87,6 +87,38 @@ describe('Restaurant Management', () => {
 
     });
 
+    describe('Report', () => {
+
+        before((done) => {
+            let assignments = [];
+            
+            for (i = 0; i < 3; i++) {
+                assignments.push({
+                    "username": `waiter1`,
+                    "table": `Table ${i + 1}`,
+                    "restaurantId": 1
+                });
+            } 
+
+            let content = JSON.stringify(assignments, null, 2);
+
+            fs.writeFile(dataFile, content, 'utf8', (error) => {
+                if (error) return done(error);
+                done();
+            });
+        });
+
+        it('should be able to view tables that are unique to one restaurant with their corresponding waiters', (done) => {
+            Query.getAssignmentDetails().then(report => {
+                expect(report).to.have.lengthOf(2); // two restaurants
+                expect(report[0].tables).to.have.lengthOf(20);
+                expect(report[0].tables.filter(tbl => tbl.waiter === "Unassigned")).to.have.lengthOf(17);
+                expect(report[1].tables.filter(tbl => tbl.waiter === "Unassigned")).to.have.lengthOf(20);
+                done();
+            }).catch(error => done(error));
+        })
+    });
+    
     describe('Waiter', () => {
 
         before((done) => {

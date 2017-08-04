@@ -1,3 +1,4 @@
+// Reuse Query code
 const Query = require('./api/queries');
 
 module.exports = (app) => {
@@ -11,12 +12,19 @@ module.exports = (app) => {
         }
     });
 
+    /**
+     * GET /login
+     */
     app.get('/login', (req, res, next) => {
         Query.getAllUsers().then(users => {
             res.render('login', { data: users });
         });
     });
 
+    /**
+     * POST /login
+     * fake login
+     */
     app.post('/login', (req, res, next) => {
         let username = req.body.username;
         
@@ -26,6 +34,10 @@ module.exports = (app) => {
         });
     });
 
+    /**
+     * GET /logout
+     * Logout
+     */
     app.get('/logout', (req, res, next) => {
         req.session.user = null;
         res.redirect('/login');

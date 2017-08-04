@@ -17,10 +17,13 @@ module.exports = (app) => {
             .catch(next);
     });
 
+    /**
+     * POST /api/assignments
+     * It should be protected & only managers allowed to make request;
+     * but it is not implemented in this demo
+     */
     app.post('/api/assignments', (req, res, next) => {
-        let assignments = req.body;
-        // validation ...
-        
+        let assignments = req.body;        
         // read (Query)    
         Query.getAssignments()
             .then(data => {
@@ -31,7 +34,21 @@ module.exports = (app) => {
             }).catch(next);
     });
 
-    app.get('/api/users', (req, res, next) => {
+    /**
+     * GET /api/waiters
+     * Imagine - manager - to assign a waiter to tables
+     * He/she needs to retrieve waiters list.
+     */
+    app.get('/api/waiters', (req, res, next) => {
         Query.getWaiters().then(waiters => res.json(waiters)).catch(next);
     });
-}
+
+    /**
+     * GET /api/restaurants
+     * - manager - this endpoint is for you as well
+     */
+    app.get('/api/restaurants', (req, res, next) => {
+        Query.getRestaurants().then(restaurants => res.json).catch(next);
+    });
+    
+};

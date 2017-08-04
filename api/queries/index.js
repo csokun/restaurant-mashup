@@ -7,30 +7,93 @@ const USERS = require('../data/users.json');
 const RESTAURANTS = require('../data/restaurants.json');
 const dataFile = path.join(__dirname, '../data/waiter-table.json');
 
-module.exports.findUser = (username) => {
+module.exports = {
+    findUser,
+    getAllUsers,
+    getWaiters,
+    getAssignments,
+    getAssignmentDetails,
+    getAssignmentForWaiter
+};
+
+/**
+ * FUNCTIONS - each of the following function return Promise
+ * If we have to replace *.json with real database calls it will not break
+ * client code.
+ */
+
+function getWaiters () {
+    let waiters = USERS.filter(user => !user.is_manager)
+        .map(user => {
+            return { username: user.username, name: user.name };
+        });    
+    return Promise.resolve(waiters);
+};
+
+function findUser (username) {
     let user = USERS.find(user => user.username == username);
     return Promise.resolve(user);
 };
 
-module.exports.getAllUsers = () => {
+function getRestaurants() {
+    return Promise.resolve(RESTAURANTS);
+};
+
+function getAllUsers () {
     let waiters = USERS.map(user => {
             return { username: user.username, name: user.name };
         });
     return Promise.resolve(waiters);
 };
 
-module.exports.getWaiters = () => {
-    let waiters = USERS.filter(user => !user.is_manager)
-        .map(user => {
-            return { username: user.username, name: user.name };
+/**
+ * Waiter table assignment projection
+ * @returns {array} tables that are unique to one restaurant with their corresponding waiters
+ */
+function getAssignmentDetails() {
+    let restaurants = RESTAURANTS.map(rest => {
+        return {
+            restaurantId: rest.id,
+            name: rest.name,
+            tables: rest.tables.map(tbl => {
+                return { name: tbl, waiter: "Unassigned" }
+            })
+        }
+    });
+
+    return getAssignments().then(assignments => {
+        (assignments || []).forEach(assignment => {
+            let restaurant = restaurants.find(rest => rest.restaurantId == assignment.restaurantId);
+            if (!restaurant) return;
+
+            let table = restaurant.tables.find(tbl => tbl.name == assignment.table);
+            if (!table) return;
+
+            table.waiter = USERS.find(usr => usr.username == assignment.username).name;
         });
-    return Promise.resolve(waiters);
+        
+        return restaurants;
+    });
+}
+
+/**
+ * Retrieve raw assignment 
+ * @returns {array}
+ */
+function getAssignments() {
+    return readFileAsync(dataFile, {encoding: 'utf8'})
+        .then(content => {
+            return JSON.parse(content);
+        });
 };
 
-module.exports.getAssignments = _getAssignments;
-
-module.exports.getAssignmentForWaiter = (waiter) => {
-    return _getAssignments().then(records => {
+/**
+ * Retrieve table allotments for a particular waiter
+ * @param {string} waiter 
+ * @returns {object} Returns an object { waiter: string, assigned: [{ table: string, restaurant: string }]}
+ */
+function getAssignmentForWaiter(waiter) {
+    return getAssignments().then(records => {
         let assigned = records.filter(rec => rec.username === waiter)
             .map(rec => {
                 // retrieve restaurant name
@@ -45,13 +108,3 @@ module.exports.getAssignmentForWaiter = (waiter) => {
         return { waiter, assigned };
     });
 };
-
-
-/// private functions
-
-function _getAssignments() {
-    return readFileAsync(dataFile, {encoding: 'utf8'})
-        .then(content => {
-            return JSON.parse(content);
-        });
-}
