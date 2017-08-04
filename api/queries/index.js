@@ -91,22 +91,27 @@ function getAssignments() {
 /**
  * Retrieve table allotments for a particular waiter
  * @param {string} waiter 
- * @returns {object} Returns an object { waiter: string, assigned: [{ table: string, restaurant: string }]}
+ * @returns {object} Returns an object { waiter: string, assigned: [{ restaurant: string, tables: [...] }]}
  */
 function getAssignmentForWaiter(waiter) {
     return getAssignments().then(records => {
-        let assigned = records.filter(rec => rec.username === waiter)
-            .map(rec => {
-                // retrieve restaurant name
+        let assignments = [];
+        
+        records.filter(rec => rec.username === waiter).forEach(rec => {
+            let assigned = assignments.find(assign => assign.restaurantId == rec.restaurantId);
+            if (!assigned) {
                 let restaurant = RESTAURANTS.find(r => r.id === rec.restaurantId);
-
-                return { 
-                    table: rec.table, 
-                    restaurant: restaurant.name,
-                    restaurantId: restaurant.id
+                assigned = { 
+                    restaurantId: restaurant.id, 
+                    restaurant: restaurant.name, 
+                    tables: [rec.table] 
                 };
-            });
+                assignments.push(assigned);
+            } else {
+                assigned.tables.push(rec.table);
+            }
+        });
 
-        return { waiter, assigned };
+        return { waiter, assigned: assignments };
     });
 };

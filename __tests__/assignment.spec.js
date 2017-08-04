@@ -142,9 +142,10 @@ describe('Restaurant Management', () => {
         it('should be able to see their table allotments across multiple restaurants', (done) => {
             Query.getAssignmentForWaiter("waiter1")
                 .then(result => {
-                    expect(result.assigned).to.have.lengthOf(3);
+                    expect(result.assigned).to.have.lengthOf(1);
                     expect(result.waiter).to.equal("waiter1");
                     expect(result.assigned[0].restaurant).to.equal("Kim Sing Restaurant");
+                    expect(result.assigned[0].tables).to.have.deep.equal(["Table 1", "Table 2", "Table 3"]);
                     done();
                 }).catch(error => done(error));
         });
