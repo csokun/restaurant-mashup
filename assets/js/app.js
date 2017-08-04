@@ -1,19 +1,61 @@
 const managerComponent = {
     bindings: { },
-    template: `<h1>Manager</h1>`,
-    controller: function () {
+    template: `
+    <h1>Manager</h1>
+    <div class="ui grid">
+        <div class="eight wide column" ng-repeat="restaurant in $ctrl.assignments">
+            <div class="ui piled segment">
+                <h4 class="ui header">{{restaurant.name}}</h4>
+
+                <div class="ui middle aligned divided list">
+                    <div class="item" ng-repeat="table in restaurant.tables">
+                        <div class="right floated content">
+                            <div class="ui button" ng-click="$ctrl.assign(restaurant, table)">Assign</div>
+                        </div>
+                        <img class="ui avatar image" src="/img/table.png">
+                        <div class="content">
+                            <div class="header">{{table.name}}</div>
+                            {{table.waiter}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    `,
+    controller: function ($q, $http) {
         this.$onInit = function () {
             console.log('manager::init()');
+            $q.all([
+                $http.get('/api/waiters'),
+                $http.get('/api/assignments')
+            ]).then(results => {
+                this.waiters = results[0].data;
+                this.assignments = results[1].data;
+            });
+        }
+
+        this.assign = function (restaurant, table) {
+            console.log(table);
         }
     }
 };
 
 const waiterComponent = {
     bindings: { },
-    template: `<h1>Waiter</h1>`,
-    controller: function () {
+    template: `
+    <h1>Waiter</h1>
+
+    `,
+    controller: function ($http) {
         this.$onInit = function () {
             console.log('waiter::init()');
+
+            $http.get(`/api/waiters/${CURRENT_USER.username}`)
+                .then(res => {
+                    this.assigned = res.data;
+                    console.log(this.assigned);
+                });
         }
     }
 };
@@ -25,15 +67,10 @@ const pwc = {
             <waiter ng-if="!$ctrl.user.is_manager"></waiter>
         </div>
     `,
-    controller: function ($http) {
-        this.waiters = [];
-        
+    controller: function ($http) {        
         this.$onInit = function () {
             console.log('pwc::app::init()');
-
-            $http.get('/api/users').then(res => {
-                this.waiters = res.data;
-            });
+            this.user = CURRENT_USER;
         }
     }
 };

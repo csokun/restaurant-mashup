@@ -11,6 +11,7 @@ module.exports = {
     findUser,
     getAllUsers,
     getWaiters,
+    getRestaurants,
     getAssignments,
     getAssignmentDetails,
     getAssignmentForWaiter
@@ -101,7 +102,8 @@ function getAssignmentForWaiter(waiter) {
 
                 return { 
                     table: rec.table, 
-                    restaurant: restaurant.name 
+                    restaurant: restaurant.name,
+                    restaurantId: restaurant.id
                 };
             });
 

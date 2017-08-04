@@ -12,7 +12,7 @@ module.exports = (app) => {
     });
 
     app.get('/api/assignments', (req, res, next) => {
-        Query.getAssignments()
+        Query.getAssignmentDetails()
             .then(data => res.json(data))
             .catch(next);
     });
@@ -48,7 +48,15 @@ module.exports = (app) => {
      * - manager - this endpoint is for you as well
      */
     app.get('/api/restaurants', (req, res, next) => {
-        Query.getRestaurants().then(restaurants => res.json).catch(next);
+        Query.getRestaurants().then(restaurants => res.json(restaurants)).catch(next);
     });
     
+    /**
+     * GET /api/waiters/:waiter
+     */
+    app.get('/api/waiters/:waiter', (req, res, next) => {
+        let waiter = req.params.waiter;
+        console.log(waiter);
+        Query.getAssignmentForWaiter(waiter).then(assigned => res.json(assigned)).catch(next);
+    })
 };
