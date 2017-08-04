@@ -5,6 +5,9 @@ const methodOverride = require('method-override')
 const helmet = require('helmet');
 const session = require('express-session');
 
+/**
+ * APP CONFIG & BOOTSTRAP
+ */
 app.use(session({ 
     secret: 'zno2~PMl;q.VXuFS3So*wX$3$wks3{./[]LvM1_^IHB<-+Mz*(-(gW<(l+wY!o_:',
     resave: false,

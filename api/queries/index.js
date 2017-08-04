@@ -1,10 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
-const readFile = util.promisify(fs.readFile);
+const readFileAsync = util.promisify(fs.readFile);
 
 const USERS = require('../data/users.json');
 const RESTAURANTS = require('../data/restaurants.json');
+const dataFile = path.join(__dirname, '../data/waiter-table.json');
 
 module.exports.findUser = (username) => {
     let user = USERS.find(user => user.username == username);
@@ -26,9 +27,31 @@ module.exports.getWaiters = () => {
     return Promise.resolve(waiters);
 };
 
-module.exports.getAssignments = () => {
-    let filename = path.join(__dirname, '..', 'data', 'waiter-table.json');
-    return readFile(filename).then(content => {
-        return JSON.parse(content);
+module.exports.getAssignments = _getAssignments;
+
+module.exports.getAssignmentForWaiter = (waiter) => {
+    return _getAssignments().then(records => {
+        let assigned = records.filter(rec => rec.username === waiter)
+            .map(rec => {
+                // retrieve restaurant name
+                let restaurant = RESTAURANTS.find(r => r.id === rec.restaurantId);
+
+                return { 
+                    table: rec.table, 
+                    restaurant: restaurant.name 
+                };
+            });
+
+        return { waiter, assigned };
     });
+};
+
+
+/// private functions
+
+function _getAssignments() {
+    return readFileAsync(dataFile, {encoding: 'utf8'})
+        .then(content => {
+            return JSON.parse(content);
+        });
 }

@@ -19,7 +19,7 @@ module.exports = (app) => {
 
     app.post('/login', (req, res, next) => {
         let username = req.body.username;
-
+        
         Query.findUser(username).then(user => {
             req.session.user = user;
             res.redirect('/');
