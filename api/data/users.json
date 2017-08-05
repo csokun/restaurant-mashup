@@ -1,0 +1,47 @@
+[
+    {
+        "username": "manager",
+        "name": "Frank Castle",
+        "is_manager": true
+    },
+    {
+        "username": "waiter1",
+        "name": "Marcus Byrnes",
+        "is_manager": false
+    },
+    {
+        "username": "waiter2",
+        "name": "Amelia Crampton",
+        "is_manager": false
+    },
+    {
+        "username": "waiter3",
+        "name": "Charlotte Scarfn",
+        "is_manager": false
+    },
+    {
+        "username": "waiter4",
+        "name": "Mikayla Payne",
+        "is_manager": false
+    },
+    {
+        "username": "waiter5",
+        "name": "Joseph Weld",
+        "is_manager": false
+    },
+    {
+        "username": "waiter6",
+        "name": "Jacob Edye",
+        "is_manager": false
+    },
+    {
+        "username": "waiter7",
+        "name": "Flynn Pratten",
+        "is_manager": false
+    },
+    {
+        "username": "waiter8",
+        "name": "Sofia Bazley",
+        "is_manager": false
+    }
+]

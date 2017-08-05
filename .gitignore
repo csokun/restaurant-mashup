@@ -5,7 +5,6 @@ node_modules/
 public/components
 .sass-cache
 .DS_Store
-data
 tmp
 config/config.json
 config/config.dev.json

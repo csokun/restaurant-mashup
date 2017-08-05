@@ -1,0 +1,37 @@
+[
+  {
+    "table": "Table 1",
+    "restaurantId": 1,
+    "waiterId": "waiter6"
+  },
+  {
+    "table": "Table 2",
+    "restaurantId": 1,
+    "waiterId": "waiter3"
+  },
+  {
+    "table": "Table 4",
+    "restaurantId": 1,
+    "waiterId": "waiter2"
+  },
+  {
+    "table": "Table 6",
+    "restaurantId": 1,
+    "waiterId": "waiter5"
+  },
+  {
+    "table": "Table 3",
+    "restaurantId": 2,
+    "waiterId": "waiter5"
+  },
+  {
+    "table": "Table 5",
+    "restaurantId": 2,
+    "waiterId": "waiter2"
+  },
+  {
+    "table": "Table 10",
+    "restaurantId": 2,
+    "waiterId": "waiter5"
+  }
+]
