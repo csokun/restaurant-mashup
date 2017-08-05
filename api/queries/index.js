@@ -57,7 +57,7 @@ function getAssignmentDetails() {
             restaurantId: rest.id,
             name: rest.name,
             tables: rest.tables.map(tbl => {
-                return { name: tbl, waiter: "Unassigned" }
+                return { name: tbl, waiter: "Unassigned", waiterId: null }
             })
         }
     });
@@ -69,8 +69,10 @@ function getAssignmentDetails() {
 
             let table = restaurant.tables.find(tbl => tbl.name == assignment.table);
             if (!table) return;
-
-            table.waiter = USERS.find(usr => usr.username == assignment.username).name;
+            
+            let waiter =  USERS.find(usr => usr.username == assignment.username);
+            table.waiter = waiter.name;
+            table.waiterId = waiter.username;
         });
         
         return restaurants;

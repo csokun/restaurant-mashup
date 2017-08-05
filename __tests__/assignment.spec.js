@@ -112,6 +112,7 @@ describe('Restaurant Management', () => {
             Query.getAssignmentDetails().then(report => {
                 expect(report).to.have.lengthOf(2); // two restaurants
                 expect(report[0].tables).to.have.lengthOf(20);
+                expect(report[0].tables[0].waiterId).to.equal("waiter1");
                 expect(report[0].tables.filter(tbl => tbl.waiter === "Unassigned")).to.have.lengthOf(17);
                 expect(report[1].tables.filter(tbl => tbl.waiter === "Unassigned")).to.have.lengthOf(20);
                 done();
