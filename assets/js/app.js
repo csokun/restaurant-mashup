@@ -1,3 +1,6 @@
+/**
+ * Manager Component
+ */
 const managerComponent = {
     bindings: { },
     template: `
@@ -34,7 +37,6 @@ const managerComponent = {
     </div>
     `,
     controller: function ($q, $http) {
-        this.currentTable = null;
         this.waiters = [];
         this.assignments = [];
         this.availableWaiters = [];
@@ -50,6 +52,11 @@ const managerComponent = {
             });
         }
 
+        /**
+         * Show assignment form
+         * User can assign one table at any given time.
+         * Because it simplify waiter constraint validation.
+         */
         this.assignForm = function (restaurant, table) {
             let assignments = [];
             // setup edit mode
@@ -74,10 +81,10 @@ const managerComponent = {
                     return rec.waiterId;
                 });
             
-            // using name matching is not a good idea
-            // but since I am sure there aren't any name clash
             this.availableWaiters = this.waiters.filter(waiter => excludedWaiters.indexOf(waiter.username) === -1);
+            
             setTimeout(() => {
+                // semantic-ui
                 $('.ui.dropdown').dropdown();
             }, 0);
         }
@@ -92,10 +99,11 @@ const managerComponent = {
         }
 
         /**
-         * Persist the assignments
+         * Persist the assignments by extracting tables from each restaurant that have waiter assigned 
          */
         this.save = function () {
             let payload = [];
+
             this.assignments.forEach(restaurant => {
                 let assigned = restaurant.tables.filter(table => !!table.waiterId)
                     .map(table => {
@@ -121,6 +129,9 @@ const managerComponent = {
     }
 };
 
+/**
+ * Waiter Component
+ */
 const waiterComponent = {
     bindings: { },
     template: `
@@ -155,6 +166,9 @@ const waiterComponent = {
     }
 };
 
+/**
+ * Main Application
+ */
 const pwc = {
     template: `
         <div>
@@ -170,6 +184,7 @@ const pwc = {
     }
 };
 
+// angular app initialization
 angular
     .module('pwc', [])
     .component('pwc', pwc)
@@ -179,4 +194,5 @@ angular
         
     });
 
+// load app
 angular.bootstrap(document.documentElement, ['pwc']);
