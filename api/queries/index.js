@@ -42,7 +42,7 @@ function getRestaurants() {
 
 function getAllUsers () {
     let waiters = USERS.map(user => {
-            return { username: user.username, name: user.name };
+            return { username: user.username, name: user.name, role: (user.is_manager? 'Manager': 'Waiter') };
         });
     return Promise.resolve(waiters);
 };

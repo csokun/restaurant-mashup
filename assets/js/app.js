@@ -1,21 +1,31 @@
 const managerComponent = {
     bindings: { },
     template: `
-    <h1>Manager</h1>
+    <div class="ui segment">
+        <h1>Manager</h1>
+        <button class="ui right aligned button yellow" ng-click="$ctrl.save()">Save</button> 
+    </div>
+
     <div class="ui grid">
         <div class="eight wide column" ng-repeat="restaurant in $ctrl.assignments">
-            <div class="ui piled segment">
+            <div class="ui segment">
                 <h4 class="ui header">{{restaurant.name}}</h4>
 
                 <div class="ui middle aligned divided list">
                     <div class="item" ng-repeat="table in restaurant.tables">
-                        <div class="right floated content">
-                            <div class="ui button" ng-click="$ctrl.assign(restaurant, table)">Assign</div>
+                        <div class="right floated content" ng-hide="!!restaurant.$_table">
+                            <div class="ui button" ng-click="$ctrl.assignForm(restaurant, table)">Assign</div>
                         </div>
                         <img class="ui avatar image" src="/img/table.png">
                         <div class="content">
                             <div class="header">{{table.name}}</div>
-                            {{table.waiter}}
+                            <span ng-hide="!!restaurant.$_table && restaurant.$_table === table" ng-class="{'ui red horizontal label': !table.waiterId}">{{table.waiter}}</span>
+                            <div ng-if="!!restaurant.$_table && restaurant.$_table == table">
+                            <select class="ui dropdown" ng-model="table.waiterId">
+                                <option ng-repeat="option in $ctrl.availableWaiters" value="{{option.waiterId}}">{{option.name}}</option>
+                            </select>
+                            <button class="ui button" ng-click="$ctrl.assigned(restaurant)">Update</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -24,6 +34,11 @@ const managerComponent = {
     </div>
     `,
     controller: function ($q, $http) {
+        this.currentTable = null;
+        this.waiters = [];
+        this.assignments = [];
+        this.availableWaiters = [];
+
         this.$onInit = function () {
             console.log('manager::init()');
             $q.all([
@@ -35,8 +50,73 @@ const managerComponent = {
             });
         }
 
-        this.assign = function (restaurant, table) {
-            console.log(table);
+        this.assignForm = function (restaurant, table) {
+            let assignments = [];
+            // setup edit mode
+            restaurant.$_table = table;
+
+            restaurant.tables.forEach(tbl => {
+                if (tbl.waiter === "Unassigned") return;    // ignore
+
+                let assigned = assignments.find(assign => assign.waiterId == tbl.waiterId);
+                if (!assigned) {
+                    assignments.push({
+                        waiterId: tbl.waiterId,
+                        count: 1
+                    });
+                } else {
+                    assigned.count ++;
+                }
+            });
+
+            let excludedWaiters = assignments.filter(assign => assign.count == 4)
+                .map(rec => {
+                    return rec.waiterId;
+                });
+            
+            // using name matching is not a good idea
+            // but since I am sure there aren't any name clash
+            this.availableWaiters = this.waiters.filter(waiter => excludedWaiters.indexOf(waiter.username) === -1);
+            setTimeout(() => {
+                $('.ui.dropdown').dropdown();
+            }, 0);
+        }
+
+        /**
+         * Assign waiter to table but does not persist the allotments
+         */
+        this.assigned = function (restaurant) {
+            let selectedWaiter =  this.availableWaiters.find(waiter => waiter.waiterId == restaurant.$_table.waiterId);
+            restaurant.$_table.waiter = selectedWaiter.name;
+            restaurant.$_table = null;
+        }
+
+        /**
+         * Persist the assignments
+         */
+        this.save = function () {
+            let payload = [];
+            this.assignments.forEach(restaurant => {
+                let assigned = restaurant.tables.filter(table => !!table.waiterId)
+                    .map(table => {
+                        return {
+                            table: table.name,
+                            restaurantId: restaurant.restaurantId,
+                            waiterId: table.waiterId
+                        }
+                    });
+
+                if (assigned.length > 0) {
+                    payload = [...payload, ...assigned];
+                }
+            });
+
+            $http.post('/api/assignments', JSON.stringify(payload))
+                .then(result => {
+                    alert('Save completed!');
+                }).catch(error => {
+                    console.error(error);
+                });
         }
     }
 };

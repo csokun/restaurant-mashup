@@ -20,7 +20,7 @@ html
                     div.field
                         select#username.ui.fluid.normal.dropdown(name="username")
                             each user in data
-                                option(value=user.username) #{user.name}
+                                option(value=user.username) #{user.name} (#{user.role})
                             
                     button.ui.fluid.large.teal.submit.button Login               
                 
