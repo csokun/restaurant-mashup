@@ -61,6 +61,9 @@ However, as the system grow I prefer to re-organise code by feature:
 
 * `Node v8.x.x` I don't have to go this far; but I can't find a better excuse to make use of `util.promisify`
 
+## Unit Tests
+![Test Results](https://raw.githubusercontent.com/csokun/restaurant-mashup/master/test-results.png)
+
 # Disclaimer 
 
 The solution implemented here has a single purpose is to demonstrate my thought processes in problem solving. As challenger requests for a simple solution that can be excuted and verify. It is not close to my definition of production ready code as it misses a few things:
@@ -68,3 +71,4 @@ The solution implemented here has a single purpose is to demonstrate my thought 
 * Vigorous sanity checking
 * Express API & MVC in the same project increase attack surface and adding complexity to code optimization
 * No build task to bundle and optimize angular code
+
