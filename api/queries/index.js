@@ -26,7 +26,7 @@ module.exports = {
 function getWaiters () {
     let waiters = USERS.filter(user => !user.is_manager)
         .map(user => {
-            return { username: user.username, name: user.name };
+            return { waiterId: user.username, name: user.name };
         });    
     return Promise.resolve(waiters);
 };
@@ -69,8 +69,8 @@ function getAssignmentDetails() {
 
             let table = restaurant.tables.find(tbl => tbl.name == assignment.table);
             if (!table) return;
-            
-            let waiter =  USERS.find(usr => usr.username == assignment.username);
+
+            let waiter =  USERS.find(usr => usr.username == assignment.waiterId);
             table.waiter = waiter.name;
             table.waiterId = waiter.username;
         });
@@ -92,14 +92,14 @@ function getAssignments() {
 
 /**
  * Retrieve table allotments for a particular waiter
- * @param {string} waiter 
+ * @param {string} waiterId 
  * @returns {object} Returns an object { waiter: string, assigned: [{ restaurant: string, tables: [...] }]}
  */
-function getAssignmentForWaiter(waiter) {
+function getAssignmentForWaiter(waiterId) {
     return getAssignments().then(records => {
         let assignments = [];
         
-        records.filter(rec => rec.username === waiter).forEach(rec => {
+        records.filter(rec => rec.waiterId === waiterId).forEach(rec => {
             let assigned = assignments.find(assign => assign.restaurantId == rec.restaurantId);
             if (!assigned) {
                 let restaurant = RESTAURANTS.find(r => r.id === rec.restaurantId);
@@ -114,6 +114,6 @@ function getAssignmentForWaiter(waiter) {
             }
         });
 
-        return { waiter, assigned: assignments };
+        return { waiterId, assigned: assignments };
     });
 };

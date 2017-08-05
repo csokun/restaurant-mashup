@@ -18,7 +18,7 @@ module.exports.assign = (assignments) => {
                     if (!accept) return;
                     
                     let count = existingAssignments.filter(rec => {
-                        return rec.username === assignment.username && rec.restaurantId == assignment.restaurantId;
+                        return rec.waiterId === assignment.waiterId && rec.restaurantId == assignment.restaurantId;
                     }).length;
 
                     if (count >= 4) {

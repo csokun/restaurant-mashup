@@ -20,7 +20,7 @@ describe('Restaurant Management', () => {
         });
 
         it('should be able to assign tables to a waiter', (done) => {
-            let assignments = [{ "username": "waiter1", "table": "Table 1", "restaurantId": 1 }];
+            let assignments = [{ "waiterId": "waiter1", "table": "Table 1", "restaurantId": 1 }];
             Command.assign(assignments)
                 .then(result => {
                     Query.getAssignments().then(results => {
@@ -33,25 +33,25 @@ describe('Restaurant Management', () => {
         
         it('should be able to reassign table (last strike win)', (done) => {
             let assignments = [
-                { "username": "waiter1", "table": "Table 1", "restaurantId": 1 },
-                { "username": "waiter2", "table": "Table 1", "restaurantId": 1 }
+                { "waiterId": "waiter1", "table": "Table 1", "restaurantId": 1 },
+                { "waiterId": "waiter2", "table": "Table 1", "restaurantId": 1 }
             ];
 
             Command.assign(assignments)
                 .then(result => {
                     Query.getAssignments().then(results => {
                         expect(results).to.have.lengthOf(1);
-                        expect(results[0].username).to.equal('waiter2');
+                        expect(results[0].waiterId).to.equal('waiter2');
                         done();
-                    });
-                });
+                    }).catch(done);
+                }).catch(done);
         });
         
         it('should not be able to assign more than 4 tables in any one restaurant', (done) => {
             let assignments = [];
             for (i = 0; i < 5; i++) {
                 assignments.push({
-                    "username": "waiter1",
+                    "waiterId": "waiter1",
                     "table": `Table ${i + 1}`,
                     "restaurantId": 1
                 });
@@ -69,7 +69,7 @@ describe('Restaurant Management', () => {
             let assignments = [];
             for (i = 0; i < 5; i++) {
                 assignments.push({
-                    "username": "waiter1",
+                    "waiterId": "waiter1",
                     "table": `Table ${i + 1}`,
                     "restaurantId": 1
                 });
@@ -94,7 +94,7 @@ describe('Restaurant Management', () => {
             
             for (i = 0; i < 3; i++) {
                 assignments.push({
-                    "username": `waiter1`,
+                    "waiterId": `waiter1`,
                     "table": `Table ${i + 1}`,
                     "restaurantId": 1
                 });
@@ -126,7 +126,7 @@ describe('Restaurant Management', () => {
             let assignments = [];
             for (i = 0; i < 3; i++) {
                 assignments.push({
-                    "username": "waiter1",
+                    "waiterId": "waiter1",
                     "table": `Table ${i + 1}`,
                     "restaurantId": 1
                 });
@@ -144,7 +144,7 @@ describe('Restaurant Management', () => {
             Query.getAssignmentForWaiter("waiter1")
                 .then(result => {
                     expect(result.assigned).to.have.lengthOf(1);
-                    expect(result.waiter).to.equal("waiter1");
+                    expect(result.waiterId).to.equal("waiter1");
                     expect(result.assigned[0].restaurant).to.equal("Kim Sing Restaurant");
                     expect(result.assigned[0].tables).to.have.deep.equal(["Table 1", "Table 2", "Table 3"]);
                     done();
